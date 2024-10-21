@@ -5,7 +5,14 @@
  * @LastEditors: lize
  */
 #include <fmt/core.h>
+
+#include <string>
+
+constexpr std::string file_path = "point.json";
+
 int main() {
-  fmt::print("Hello, World!\n");
+  GENEDEFINE(Point, (double)x, (double)y);
+  Point point;
+  LoadObj(point, "point.json");
   return 0;
 }

@@ -1,0 +1,18 @@
+Checks: >
+  cppcoreguidelines-*,
+  performance-*,
+  -performance-avoid-endl,
+  -clang-analyzer-*,
+WarningsAsErrors: ''
+HeaderFilterRegex: ''
+AnalyzeTemporaryDtors: false
+FormatStyle: none
+User: ''
+CheckOptions:
+  - key:             modernize-use-nullptr.NullMacros
+    value:           'NULL'
+  - key:             readability-identifier-naming.VariableCase
+    value:           'lower_case'
+readability-*,
+modernize-*,
+clang-analyzer-*,

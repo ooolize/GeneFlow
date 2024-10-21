@@ -5,7 +5,7 @@
  * @LastEditors: lize
 -->
 
-# ZhouboTong
+# GenFlow
 
 <p align="center">
   <a>
@@ -17,7 +17,7 @@
 
 ## Introduce
 
-一个配置文件序列化库
+一个静态解析的配置文件序列化库
 
 ## Primary Goal
 
