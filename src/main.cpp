@@ -8,11 +8,16 @@
 
 #include <string>
 
+#include "interface/define.h"
+#include "load.h"
+
 constexpr std::string file_path = "point.json";
 
+// clang-format off
+GENE_DEFINE(Point, (double) x, (double) y); // TODO支持(double)x
+// clang-format on
 int main() {
-  GENEDEFINE(Point, (double)x, (double)y);
   Point point;
-  LoadObj(point, "point.json");
+  load_json(point, "point.json");
   return 0;
 }

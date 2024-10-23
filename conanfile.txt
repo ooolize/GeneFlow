@@ -5,6 +5,7 @@ readerwriterqueue/1.0.6
 concurrentqueue/1.0.4
 boost/1.85.0
 fmt/11.0.2
+nlohmann_json/3.11.3
 [generators]
 CMakeDeps
 CMakeToolchain

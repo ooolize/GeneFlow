@@ -1,0 +1,8 @@
+build/*
+.vscode/*
+bin/*
+3rdparty/*
+CMakeUserPresets.json
+timer.txt
+test.*
+todo*

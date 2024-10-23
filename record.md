@@ -20,6 +20,20 @@ std::decay<T> 将类型 T 进行某种“标准化”处理，消除一些类型
 
 Field
 
++ 类作用域不允许有全特化和部分特化 是一个缺陷
+
+```c++
+
+
+```
++ 确保在适当的上下文中使用 static 成员，局部类（函数内部类）中不允许 static 数据成员
+```c++
+void func() {
+    GENE_DEFINE(LocalPoint, double x, double y);  // 错误：局部类不允许静态成员
+}
+```
+
++ 实际上是生成解析的代码
 ```c++
 
 + static和constexpr有什么关系 一起使用是什么意思
@@ -34,24 +48,6 @@ static 变量不一定是编译期常量(单例)。 static 关键字在 C++ 中�
 static 和编译期常量的关
 
 
-struct Point{
-    double x;
-    double y;
 
-    static constexpr int field_count = 2;
-    template<typename T>
-    struct Field<T,0> {
-        T& obj; // why
-        decltype(auto) value() {return obj.x};
-        decltype(auto)  name() const {return "x"};
-    };
-
-    template<typename T>
-    struct Field<T,1> {
-        T& obj; 
-        decltype(auto) value() {return obj.y};
-        decltype(auto)  name() const {return "y"};
-    };
-}
 
 ```

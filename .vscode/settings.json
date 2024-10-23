@@ -105,7 +105,8 @@
         "socket": "cpp",
         "shared_mutex": "cpp",
         "scoped_allocator": "cpp",
-        "source_location": "cpp"
+        "source_location": "cpp",
+        "typeindex": "cpp"
     },
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 2000,

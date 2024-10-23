@@ -17,7 +17,7 @@ set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_CXX_STANDARD 20)
 
 # 设置项目名称
-project(zhoubotong)
+project(gene_flow)
 
 # 设置编译选项
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

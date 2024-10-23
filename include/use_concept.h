@@ -8,9 +8,23 @@
 #pragma once
 
 #include <concepts>
+#include <string>
 #include <type_traits>
+
 namespace lz {
 namespace use_concepts {
+
+template <typename T>
+concept Number = std::is_arithmetic_v<T>;
+
+template <typename T>
+concept Bool = std::is_same_v<T, bool>;
+
+template <typename T>
+concept String = std::is_same_v<T, std::string>;
+
+template <typename T>
+concept BasicType = Number<T> || Bool<T> || String<T>;
 
 template <typename T>
 concept Reflect = requires(T t) {
@@ -25,8 +39,8 @@ concept Reflect = requires(T t) {
 
 template <typename T>
 concept Elem = requires(T t) {
-  t.get_name();
-  t.get_value_text();
+  // t.get_name();
+  // t.get_value_text();
   t.get_child_elem();
 };
 
