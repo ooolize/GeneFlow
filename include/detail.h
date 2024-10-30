@@ -5,8 +5,10 @@
  * @LastEditors: lize
  */
 #pragma once
-#include <istream>
+#include <iostream>
+#include <sstream>
 
+#include "check_field.h"
 #include "interface/define.h"
 #include "use_concept.h"
 
@@ -14,7 +16,7 @@ namespace lz {
 namespace GeneFlow {
 
 template <lz::use_concepts::Number Number, lz::use_concepts::Elem Elem>
-Result checkBaseElem(Number& number, Elem auto&& elem) {
+Result checkBaseElem(Number& number, Elem&& elem) {
   // TODO hex
   std::istringstream is(elem.get_value_text());
   if (is.fail()) {
@@ -25,7 +27,7 @@ Result checkBaseElem(Number& number, Elem auto&& elem) {
 }
 
 template <lz::use_concepts::Bool Bool, lz::use_concepts::Elem Elem>
-Result checkBaseElem(Bool& b, Elem auto&& elem) {
+Result checkBaseElem(Bool& b, Elem&& elem) {
   // elem不应该是 true 而不是 "true"吗
   auto text = elem.get_value_text();
   if (text == "True" || text == "true") {
@@ -39,28 +41,30 @@ Result checkBaseElem(Bool& b, Elem auto&& elem) {
 }
 
 template <lz::use_concepts::String String, lz::use_concepts::Elem Elem>
-Result checkBaseElem(String& s, Elem auto&& elem) {
+Result checkBaseElem(String& s, Elem&& elem) {
+  // lz::use_concepts::dump<decltype(s)>{};
   auto value = elem.get_value_text();
   if constexpr (!std::same_as<String, std::string>) {
     return Result::NOT_STRING;
   }
-  s = value;
+  s = value.data();
   return Result::SUCCESS;
 }
 
-template <lz::use_concepts::BasicType BasicType, lz::use_concepts::Elem Elem>
-Result checkElem(BasicType& t, Elem auto&& elem) {
-  return checkBaseElem(t, std::forward(elem));
+template <lz::use_concepts::BasicType BasicType>
+Result checkElem(BasicType& t, lz::use_concepts::Elem auto&& elem) {
+  return checkBaseElem(t, std::forward<decltype(elem)>(elem));
 }
 
-template <lz::use_concepts::Reflect Reflect, lz::use_concepts::Elem Elem>
-Result checkElem(Reflect& obj, Elem auto&& elem) {
-  auto f = [&](auto& field) {
+// obj是最后的结果 elem是预先建立的树的节点
+template <lz::use_concepts::Reflect Reflect>
+Result checkElem(Reflect& obj, lz::use_concepts::Elem auto&& elem) {
+  auto f = [elem](auto&& field) {
     decltype(auto) name = field.name();
-    decltype(auto) value = field.value();
-    return checkElem(name, elem.get_child_elem(name));
+    // decltype(auto) value = field.value();
+    return checkElem(name, elem.get_child_elem(name));  // why not  const
   };
-  return for_each_field(obj, f);
+  return for_each_field(obj, std::forward<decltype(f)>(f));
 }
 
 }  // namespace GeneFlow

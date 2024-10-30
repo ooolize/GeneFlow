@@ -32,6 +32,48 @@ void func() {
     GENE_DEFINE(LocalPoint, double x, double y);  // 错误：局部类不允许静态成员
 }
 ```
++ 非/类型参数包  形参包展开 折叠表达式
+```c++
+template<typename ...Args> // 有很多类型 叫做Args...
+void f(Args... a){ // 此处 Args 是类型参数包，args 是值参数包
+  auto p = a+...; // 折叠表达式 递归的简写 a+... 一旦有了折叠表达式 a就代表的是一个参数 而不是参数包了
+}
+ //（(f(Index)|| ...))  的外部括号是必须的 以明确表达式的展开范围和运算顺序。
+```
+
+
++ decltype
+
+decltype(auto)：会根据表达式的实际类型和值类别来推导，可以是普通值类型、左值引用类型或右值引用类型。
+decltype((auto))：无论表达式实际是左值还是右值，都会将其推导为左值引用类型。
+
++ 何时绑定的Field中的T&obj？
+
++ 打印方法--dump
++ why not Field static
+
++ 以下错误
+```c++
+template <lz::use_concepts::Reflect Reflect, typename F>
+static constexpr Result for_each_field(Reflect& obj, F& f) {
+  for (std::size_t i = 0; i < Reflect::fields_count; ++i) {
+    auto& field = obj.template Field<Reflect, i>;
+    if (auto res = f(field); res != Result::SUCCESS) {
+      return res;
+    }
+  }
+  return Result::SUCCESS;
+}
+在运行时动态访问类模板成员（即通过索引 i 动态决定类型）是无法实现的，因为模板实例化是在编译时进行的，不能在运行时依赖变量
+
+需要使用递归展开 or 折叠表达式
+
+
+```
+
++ std::invocable<F>
+
+要求F支持无参调用， 如果要指定参数 std::invocable<F, Args...> 
 
 + 实际上是生成解析的代码
 ```c++

@@ -5,61 +5,54 @@
  * @LastEditors: lize
  */
 #pragma once
+#include "detail.h"
 #include "interface/define.h"
 #include "json_parse.h"
 #include "use_concept.h"
 namespace lz {
 namespace GeneFlow {
 
+
+
 // 负责载入输入，并开始解析
-template <lz::use_concepts::Parse T>
+template <lz::use_concepts::Parse Parser>
 class LoadObj {
  public:
   template <typename Obj, std::invocable GET_CONTENT>
-  Result operator()(Obj& obj, GET_CONTENT content) {
-    auto content = content();
-    Parse p(content);
+  Result operator()(Obj& obj, GET_CONTENT content_getter) {
+    std::string data = content_getter();
+    Parser p(data);
     auto ret = p.parse();
     if (ret != Result::SUCCESS) {
       return ret;
     }
 
-    if (!p.checkFormat()) {
-      return Result::FAILED;
-    }
-
     decltype(auto) root = p.getRootElem();
-    return checkElem(obj, std::forward<decltype(root)>(root));
+    // dump<Obj>{};
+    return lz::GeneFlow::checkElem(obj, std::forward<decltype(root)>(root));
   };
 
-  Result operator()(Obj& obj, std::string_view file_path) {
-    std::ifstream ifs(file_path);
-    if (!ifs.is_open()) {
+  template <typename Obj>
+  Result operator()(Obj& obj, const std::string& file_path) {
+    std::ifstream file(file_path);
+    if (!file.is_open()) {
       return Result::FILE_OPEN_FAILED;
     }
-    return (*this)(obj, [ifs, content = std::string_view{}]() {
-      ifs >> content;
-      return content;
-    });
+    std::string content((std::istreambuf_iterator<char>(file)),
+                        std::istreambuf_iterator<char>());
+    file.close();
+    auto sp_content = std::make_shared<std::string>(std::move(content));
+    return (*this)(obj, [sp_content]() { return *sp_content; });
   }
 };
 
 template <typename T, typename Content>
 decltype(auto) load_json(T& t, Content&& content) {
-  return LoadObj<JsonParse>(t, std::forward<Content>(content));
+  // dump<Content>{};
+  return LoadObj<JsonParse>{}(t, std::forward<Content>(content));
 }
 
-// 负责对reflect的节点元素的每个field进行判断
-template <lz::use_concepts::Reflect Reflect, std::invocable F>
-static constexpr Result for_each_field(Reflect& obj, F& f) {
-  for (std::size_t i = 0; i < Reflect::fields_count; ++i) {
-    auto& field = obj.template Field<Reflect, i>;
-    if (auto res = f(field); res != Result::SUCCESS) {
-      return res;
-    }
-  }
-  return Result::SUCCESS;
-}
+
 
 }  // namespace GeneFlow
 }  // namespace lz
