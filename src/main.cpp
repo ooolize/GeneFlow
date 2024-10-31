@@ -6,15 +6,17 @@
  */
 #include <fmt/core.h>
 
+#include <iostream>
 #include <string>
 
 #include "interface/define.h"
 #include "load.h"
-
+#include "print_field.h"
 constexpr std::string file_path = "point.json";
 
 // clang-format off
-GENE_DEFINE(Point, (double) x, (double) y); // TODO支持(double)x
+GENE_DEFINE(Point, (double) x, (double) y,(double) z); // TODO支持(double)x
+GENE_DEFINE(Config, (Point) point);
 // clang-format on
 
 // struct Point {
@@ -45,8 +47,13 @@ GENE_DEFINE(Point, (double) x, (double) y); // TODO支持(double)x
 //   };
 // };
 int main() {
-  Point point{};
-  lz::GeneFlow::load_json(point, "point.json");
-  fmt::print("x: {}, y: {}\n", point.x, point.y);
+  Config config{};
+  auto ret = lz::GeneFlow::load_json(config, "point.json");
+  if (ret != lz::GeneFlow::Result::SUCCESS) {
+    std::cout << "load json failed " << static_cast<uint8_t>(ret) << std::endl;
+    return -1;
+  }
+  // fmt::print("x: {}, y: {}\n", config.point.x, config.point.y);
+  lz::GeneFlow::print_config(config);
   return 0;
 }

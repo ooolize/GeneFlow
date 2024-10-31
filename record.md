@@ -54,7 +54,10 @@ field保存对象的引用 逐个field进行递归分解和赋值 当所有field
 
 + 打印方法--dump
 + why not Field static
-
++ 判断是否满足某个概念 
+```c++
+if constexpr (Addable<T>) 
+```
 + at与[]
 
 + 聚合初始化
