@@ -56,13 +56,16 @@ Result checkElem(BasicType& t, lz::use_concepts::Elem auto&& elem) {
   return checkBaseElem(t, std::forward<decltype(elem)>(elem));
 }
 
-// obj是最后的结果 elem是预先建立的树的节点
+// obj是最后的结果 elem是预先建立的树的节点 field是每个Field属性对象
+// 需要为属性赋值 就需要拿到属性的值 通过所以需要value()返回引用
 template <lz::use_concepts::Reflect Reflect>
 Result checkElem(Reflect& obj, lz::use_concepts::Elem auto&& elem) {
   auto f = [elem](auto&& field) {
     decltype(auto) name = field.name();
-    // decltype(auto) value = field.value();
-    return checkElem(name, elem.get_child_elem(name));  // why not  const
+    decltype(auto) value = field.value();
+    // 传递的是value 而不是obj,需要递归将obj分解成不同类型的value对象
+    // 如果value是自定义的类型就继续分解，直到树的末端被赋值
+    return checkElem(value, elem.get_child_elem(name));  // why not  const
   };
   return for_each_field(obj, std::forward<decltype(f)>(f));
 }

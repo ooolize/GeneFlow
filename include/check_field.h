@@ -19,6 +19,8 @@ static constexpr Result for_each_field_impl(Reflect& obj,
                                             F&& f,
                                             std::index_sequence<Index...>) {
   // （(f(Index)|| ...)) 外部括号是必须的
+  // 聚合初始化 field绑定实际对象的引用， 在f中field被分解或赋值
+  // 当所有field都被赋值后，它绑定的实际对象也就获取了它该有的值
   if (((f(typename Reflect::template Field<Reflect, Index>{obj}) !=
         Result::SUCCESS) ||
        ...)) {

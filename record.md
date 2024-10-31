@@ -46,11 +46,30 @@ void f(Args... a){ // 此处 Args 是类型参数包，args 是值参数包
 
 decltype(auto)：会根据表达式的实际类型和值类别来推导，可以是普通值类型、左值引用类型或右值引用类型。
 decltype((auto))：无论表达式实际是左值还是右值，都会将其推导为左值引用类型。
+decltype(auto) value() 是14对它的语法糖 auto value()-> decltype(auto)
 
-+ 何时绑定的Field中的T&obj？
+
++ 所以何时绑定的Field中的T&obj？
+field保存对象的引用 逐个field进行递归分解和赋值 当所有field都被赋值之后 就绑定成功
 
 + 打印方法--dump
 + why not Field static
+
++ at与[]
+
++ 聚合初始化
+```c++
+class MyClass {
+public:
+    int& ref;  // 引用成员
+};
+int main() {
+    int a = 1;
+    MyClass obj{a};  // 可以 
+     MyClass obj(a); // 错误 
+    return 0;
+}
+```
 
 + 以下错误
 ```c++

@@ -22,8 +22,9 @@ class JsonParse {
   using Elem = JsonNode;
   using NodeUptr = std::unique_ptr<JsonNode>;
   using NodeSptr = std::shared_ptr<JsonNode>;
-  explicit JsonParse(std::string_view content) {
+  explicit JsonParse(const std::string& content) {
     _content = content;
+    _root = std::make_unique<JsonNode>();
   }
   Result parse() {
     try {
@@ -40,21 +41,21 @@ class JsonParse {
   };
   struct JsonNode {
     JsonNode() = default;
-    explicit JsonNode(std::string_view key, std::string_view value)
+    explicit JsonNode(const std::string& key, const std::string& value)
       : _key(key), _value_text(value) {
     }
     decltype(auto) get_value_text() const {
       return std::string(_value_text);
     }
-    JsonNode get_child_elem(std::string_view name) const {
+    JsonNode get_child_elem(const std::string& name) const {
       if (_children.find(name.data()) == _children.end()) {
         return JsonNode{};
       }
       return *_children.at(name.data());
     }
-    std::string_view _key{};
-    std::string_view _value_text{};
-    std::map<std::string_view, NodeSptr> _children{};
+    std::string _key{};
+    std::string _value_text{};  // TODO 使用string_view dfs会失败 why
+    std::map<std::string, NodeSptr> _children{};
   };
 
   JsonNode getRootElem() const {
@@ -70,7 +71,7 @@ class JsonParse {
 
   void dfs(const nlohmann::json& j, JsonNode* node) {
     if (j.is_object()) {
-      for (auto& [key, value] : j.items()) {
+      for (auto [key, value] : j.items()) {
         auto child = std::make_shared<JsonNode>(key, value.dump());
         node->_children[key] = child;
         dfs(value, child.get());
@@ -79,7 +80,7 @@ class JsonParse {
   }
 
  private:
-  std::string_view _content{};
+  std::string _content{};
   nlohmann::json _json{};
   std::unique_ptr<JsonNode> _root{};
 };

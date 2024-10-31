@@ -60,7 +60,7 @@ enum class Result : std::uint8_t {
   struct Field<T, i> {                    \
     T& obj;                               \
     decltype(auto) value() {              \
-      return obj.STRIP(arg);              \
+      return (obj.STRIP(arg));            \
     }                                     \
     static constexpr const char* name() { \
       return STRING(STRIP(arg));          \

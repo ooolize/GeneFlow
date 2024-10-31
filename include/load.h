@@ -12,7 +12,24 @@
 namespace lz {
 namespace GeneFlow {
 
+template <typename T>
+struct DummyStruct {
+  static constexpr std::size_t fields_count = 1;
+  template <typename U, std::size_t N>
+  struct Field;
+  T& data;
 
+  template <typename U>
+  struct Field<U, 0> {
+    U& obj;
+    decltype(auto) value() {
+      return obj.data;
+    }
+    static constexpr const char* name() {
+      return "point";
+    }
+  };
+};
 
 // 负责载入输入，并开始解析
 template <lz::use_concepts::Parse Parser>
@@ -26,10 +43,11 @@ class LoadObj {
     if (ret != Result::SUCCESS) {
       return ret;
     }
-
+    DummyStruct<Obj> dummy{obj};
     decltype(auto) root = p.getRootElem();
     // dump<Obj>{};
-    return lz::GeneFlow::checkElem(obj, std::forward<decltype(root)>(root));
+    ret = lz::GeneFlow::checkElem(dummy, std::forward<decltype(root)>(root));
+    return ret;
   };
 
   template <typename Obj>
@@ -51,8 +69,6 @@ decltype(auto) load_json(T& t, Content&& content) {
   // dump<Content>{};
   return LoadObj<JsonParse>{}(t, std::forward<Content>(content));
 }
-
-
 
 }  // namespace GeneFlow
 }  // namespace lz
