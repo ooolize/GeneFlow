@@ -74,6 +74,7 @@ int main() {
 }
 ```
 
+
 + 以下错误
 ```c++
 template <lz::use_concepts::Reflect Reflect, typename F>
@@ -112,6 +113,18 @@ static 变量不一定是编译期常量(单例)。 static 关键字在 C++ 中�
 static 和编译期常量的关
 
 
++ void_t
 
+用来配合SFINAE 检测某个类型的特性
+```c++
+template<typename,typename void>
+class has_foo: std::false_type {};
+
+template<typename T>
+class has_foo<T,std::void_t<decltype(std::declval<T>().foo())>>: std::true_type {};
+
+```
+
++ std::is_same_v<A, B> std::is_same<A, B>::value 
 
 ```

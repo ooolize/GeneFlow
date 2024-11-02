@@ -12,7 +12,6 @@
 #include "interface/define.h"
 #include "load.h"
 #include "print_field.h"
-constexpr std::string file_path = "point.json";
 
 // clang-format off
 GENE_DEFINE(Color, (int) r,(int) g,(int) b); 

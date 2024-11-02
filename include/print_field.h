@@ -46,7 +46,7 @@ void print_config(Reflect& obj, const std::string& sep = "") {
       fmt::print("\n");
     }
     print_config(value, sep + "\t");
-    return Result::SUCCESS;
+    // return Result::SUCCESS;
   };
   for_each_field(obj, std::forward<decltype(f)>(f));
 }
