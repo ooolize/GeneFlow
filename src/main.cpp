@@ -15,8 +15,9 @@
 constexpr std::string file_path = "point.json";
 
 // clang-format off
-GENE_DEFINE(Point, (double) x, (double) y,(double) z); // TODO支持(double)x
-GENE_DEFINE(Config, (Point) point);
+GENE_DEFINE(Color, (int) r,(int) g,(int) b); 
+GENE_DEFINE(Point, (double) x, (double) y,(double) z,(Color) color); // TODO支持(double)x
+GENE_DEFINE(Config, (Point) point,(std::string) description);
 // clang-format on
 
 // struct Point {
@@ -50,7 +51,8 @@ int main() {
   Config config{};
   auto ret = lz::GeneFlow::load_json(config, "point.json");
   if (ret != lz::GeneFlow::Result::SUCCESS) {
-    std::cout << "load json failed " << static_cast<uint8_t>(ret) << std::endl;
+    std::cout << "load json failed " << static_cast<std::int32_t>(ret)
+              << std::endl;
     return -1;
   }
   // fmt::print("x: {}, y: {}\n", config.point.x, config.point.y);

@@ -18,15 +18,17 @@ template <lz::use_concepts::Reflect Reflect, typename F, std::size_t... Index>
 static constexpr Result for_each_field_impl(Reflect& obj,
                                             F&& f,
                                             std::index_sequence<Index...>) {
+  Result res = Result::SUCCESS;
   // （(f(Index)|| ...)) 外部括号是必须的
   // 聚合初始化 field绑定实际对象的引用， 在f中field被分解或赋值
   // 当所有field都被赋值后，它绑定的实际对象也就获取了它该有的值
-  if (((f(typename Reflect::template Field<Reflect, Index>{obj}) !=
+  // TODO 支持无返回值的f
+  if ((((res = f(typename Reflect::template Field<Reflect, Index>{obj})) !=
         Result::SUCCESS) ||
        ...)) {
-    return Result::FAILED;
+    return res;
   }
-  return Result::SUCCESS;
+  return res;
 }
 
 // 负责对reflect的节点元素的每个field进行判断

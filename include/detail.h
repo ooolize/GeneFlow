@@ -19,10 +19,10 @@ template <lz::use_concepts::Number Number, lz::use_concepts::Elem Elem>
 Result checkBaseElem(Number& number, Elem&& elem) {
   // TODO hex
   std::istringstream is(elem.get_value_text());
+  is >> number;
   if (is.fail()) {
     return Result::NOT_NUMBER;
   }
-  is >> number;
   return Result::SUCCESS;
 }
 
@@ -53,7 +53,12 @@ Result checkBaseElem(String& s, Elem&& elem) {
 
 template <lz::use_concepts::BasicType BasicType>
 Result checkElem(BasicType& t, lz::use_concepts::Elem auto&& elem) {
-  return checkBaseElem(t, std::forward<decltype(elem)>(elem));
+  auto res = checkBaseElem(t, std::forward<decltype(elem)>(elem));
+  if (res != Result::SUCCESS) {
+    std::cerr << "key:" << elem._key << " value:" << elem._value_text
+              << " type error" << std::endl;
+  }
+  return res;
 }
 
 // obj是最后的结果 elem是预先建立的树的节点 field是每个Field属性对象
