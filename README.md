@@ -5,7 +5,7 @@
  * @LastEditors: lize
 -->
 
-# GenFlow
+# GeneFlow
 
 <p align="center">
   <a>
