@@ -69,7 +69,7 @@ public:
 int main() {
     int a = 1;
     MyClass obj{a};  // 可以 
-     MyClass obj(a); // 错误 
+    MyClass obj(a); // 错误 
     return 0;
 }
 ```
@@ -99,7 +99,7 @@ static constexpr Result for_each_field(Reflect& obj, F& f) {
 要求F支持无参调用， 如果要指定参数 std::invocable<F, Args...> 
 
 + 实际上是生成解析的代码
-```c++
+
 
 + static和constexpr有什么关系 一起使用是什么意思
 

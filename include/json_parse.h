@@ -16,7 +16,7 @@ namespace lz {
 namespace GeneFlow {
 
 // 解析库的包装  需要重建json符合定义的接口形式
-class JsonParse {
+class JsonParse  :std::enable_shared_from_this<JsonParse>{
  public:
   struct JsonNode;
   using Elem = JsonNode;
@@ -53,8 +53,8 @@ class JsonParse {
       }
       return *_children.at(name.data());
     }
-    std::string _key{};
-    std::string _value_text{};  // TODO 使用string_view dfs会失败 why
+    std::string_view _key{};
+    std::string_view _value_text{};  // TODO 使用string_view dfs会失败 why
     std::map<std::string, NodeSptr> _children{};
   };
 
@@ -72,7 +72,8 @@ class JsonParse {
   void dfs(const nlohmann::json& j, JsonNode* node) {
     if (j.is_object()) {
       for (auto [key, value] : j.items()) {
-        auto child = std::make_shared<JsonNode>(key, value.dump());
+        std::string tmp = value.dump();
+        auto child = std::make_shared<JsonNode>(key, tmp);
         node->_children[key] = child;
         dfs(value, child.get());
       }

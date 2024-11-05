@@ -25,6 +25,7 @@ enum class Result : std::uint8_t {
 
 #define EXPAND(x) x  // NOLINT  for msvc
 
+// 有多少个参数 取决于被挤出去多少
 #define CYLINDER(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, N, ...) N  // NOLINT
 #define GET_ARGS_COUNT(...) CYLINDER(__VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
 

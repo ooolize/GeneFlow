@@ -23,8 +23,9 @@ template <lz::use_concepts::Reflect Reflect, typename F, std::size_t... Index>
 static constexpr auto for_each_field_impl(Reflect& obj,
                                           F&& f,
                                           std::index_sequence<Index...>) {
-  using f_res = decltype(std::declval<F>()(std::declval<DummyField>()));
-  // TODO 支持无返回值的f
+  //  using f_res = decltype(std::declval<F>()(std::declval<DummyField>()));
+  using f_res = decltype(f(std::declval<DummyField>()));
+
   if constexpr (std::is_same_v<void, f_res>) {
     (f(typename Reflect::template Field<Reflect, Index>{obj}), ...);
   } else {
@@ -42,7 +43,7 @@ static constexpr auto for_each_field_impl(Reflect& obj,
 }
 
 // 负责对reflect的节点元素的每个field进行判断
-// TODO std::invockable
+// TODO why std::invockable can work
 template <lz::use_concepts::Reflect Reflect, typename F>
 static constexpr auto for_each_field(Reflect& obj, F&& f) {
   return for_each_field_impl(
